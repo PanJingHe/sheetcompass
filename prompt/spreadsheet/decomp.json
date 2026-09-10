@@ -1,0 +1,13 @@
+{
+  "input": {
+    "instruction": "How can I filter a large dataset in Excel to display records within the 2019 to 2023 date range where the 'Date Paid' field is not empty in the 'Paid' worksheet, and records where the 'Date Paid' field is null or empty in the 'NotPaid' worksheet, preferably using a function? There's an example provided in the attached file called 'Vendor.xlsm'."
+  },
+  "output": {
+    "steps": [
+      "Map the source table and the Paid / NotPaid destination sheets.",
+      "Set inclusive 2019–2023 bounds and rules: Paid = in range + Date Paid nonempty; NotPaid = in range + Date Paid empty.",
+      "Write FILTER (or equivalent) from source into Paid and NotPaid with matching headers.",
+      "Validate headers and samples against the Vendor example file."
+    ]
+  }
+}

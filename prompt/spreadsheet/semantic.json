@@ -1,0 +1,56 @@
+{
+  "input": {
+    "instruction": "How can I filter a large dataset in Excel to display records within the 2019 to 2023 date range where the 'Date Paid' field is not empty in the 'Paid' worksheet, and records where the 'Date Paid' field is null or empty in the 'NotPaid' worksheet, preferably using a function? There's an example provided in the attached file called 'Vendor.xlsm'.",
+    "tables_preview": [
+      {
+        "table_id": "Vendor_T0",
+        "sheet_name": "Vendor",
+        "num_cols": 2,
+        "range": "A2:B8",
+        "preview_rows": [
+          { "Vendor ID": "V001", "Date Paid": "2021-03-05" },
+          { "Vendor ID": "V002", "Date Paid": "" }
+        ]
+      },
+      {
+        "table_id": "Paid_T1",
+        "sheet_name": "Paid",
+        "num_cols": 2,
+        "range": "A2:B5",
+        "preview_rows": [{ "Vendor ID": "V001", "Date Paid": "2021-03-05" }]
+      }
+    ],
+    "structural_edges": "- S_vendor -> Vendor_T0 : has_table\n- S_paid -> Paid_T1 : has_table\n- S_notpaid -> NotPaid_T2 : has_table\n- Vendor_T0 -> Vendor_T0_C2_datepaid : has_column\n- Vendor_T0 -> Paid_T1 : candidate_transfer\n- Vendor_T0 -> NotPaid_T2 : candidate_transfer",
+    "node_context": [
+      { "id": "S_vendor", "type": "sheet", "name": "Vendor", "structural_role": "Source sheet; Vendor_T0." },
+      { "id": "S_paid", "type": "sheet", "name": "Paid", "structural_role": "Paid sheet; Paid_T1." },
+      { "id": "S_notpaid", "type": "sheet", "name": "NotPaid", "structural_role": "NotPaid sheet; NotPaid_T2." },
+      { "id": "Vendor_T0", "type": "table", "name": "Vendor_T0", "structural_role": "FILTER source." },
+      { "id": "Paid_T1", "type": "table", "name": "Paid_T1", "structural_role": "In-range rows with Date Paid set." },
+      { "id": "NotPaid_T2", "type": "table", "name": "NotPaid_T2", "structural_role": "In-range rows with Date Paid blank." },
+      { "id": "Vendor_T0_C2_datepaid", "type": "column", "name": "Date Paid", "structural_role": "Source Date Paid; drives split." }
+    ]
+  },
+  "output": {
+    "node_semantics": [
+      { "id": "Vendor_T0", "semantic_info": "Apply 2019–2023 and Date Paid empty/nonempty rules." },
+      { "id": "Paid_T1", "semantic_info": "Destination for in-range rows with Date Paid set." },
+      { "id": "NotPaid_T2", "semantic_info": "Destination for in-range rows with Date Paid blank." },
+      { "id": "Vendor_T0_C2_datepaid", "semantic_info": "Field that drives paid vs unpaid routing." }
+    ],
+    "semantic_links": [
+      {
+        "source": "Vendor_T0",
+        "target": "Paid_T1",
+        "link_type": "data_flow",
+        "rationale": "Filtered nonempty Date Paid rows flow to Paid."
+      },
+      {
+        "source": "Vendor_T0",
+        "target": "NotPaid_T2",
+        "link_type": "data_flow",
+        "rationale": "Filtered empty Date Paid rows flow to NotPaid."
+      }
+    ]
+  }
+}

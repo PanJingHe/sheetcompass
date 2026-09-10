@@ -1,0 +1,122 @@
+{
+  "input": {
+    "steps": [
+      "Map the source table and the Paid / NotPaid destination sheets.",
+      "Set inclusive 2019–2023 bounds and rules: Paid = in range + Date Paid nonempty; NotPaid = in range + Date Paid empty.",
+      "Write FILTER (or equivalent) from source into Paid and NotPaid with matching headers.",
+      "Validate headers and samples against the Vendor example file."
+    ],
+    "graph_nodes": [
+      {
+        "id": "S_vendor",
+        "type": "sheet",
+        "name": "Vendor",
+        "description": { "structural_role": "Source sheet; hosts Vendor_T0." }
+      },
+      {
+        "id": "S_paid",
+        "type": "sheet",
+        "name": "Paid",
+        "description": { "structural_role": "Paid sheet; hosts Paid_T1." }
+      },
+      {
+        "id": "S_notpaid",
+        "type": "sheet",
+        "name": "NotPaid",
+        "description": { "structural_role": "NotPaid sheet; hosts NotPaid_T2." }
+      },
+      {
+        "id": "Vendor_T0",
+        "type": "table",
+        "name": "Vendor_T0",
+        "description": {
+          "structural_role": "Source table; FILTER from here.",
+          "layout_fields": "data_start_row=2; data_columns=A:B"
+        }
+      },
+      {
+        "id": "Paid_T1",
+        "type": "table",
+        "name": "Paid_T1",
+        "description": {
+          "structural_role": "Paid destination; receives from Vendor_T0.",
+          "layout_fields": "data_start_row=2; data_columns=A:B"
+        }
+      },
+      {
+        "id": "NotPaid_T2",
+        "type": "table",
+        "name": "NotPaid_T2",
+        "description": {
+          "structural_role": "NotPaid destination; receives from Vendor_T0.",
+          "layout_fields": "data_start_row=2; data_columns=A:B"
+        }
+      },
+      {
+        "id": "Vendor_T0_C2_datepaid",
+        "type": "column",
+        "name": "Date Paid",
+        "description": { "structural_role": "Source Date Paid; filter and split field." }
+      }
+    ],
+    "graph_edges": [
+      { "ref": "S_vendor->Vendor_T0:has_table", "description": "Sheet contains source table.", "category": "structural" },
+      { "ref": "S_paid->Paid_T1:has_table", "description": "Sheet contains Paid destination.", "category": "structural" },
+      { "ref": "S_notpaid->NotPaid_T2:has_table", "description": "Sheet contains NotPaid destination.", "category": "structural" },
+      { "ref": "Vendor_T0->Vendor_T0_C2_datepaid:has_column", "description": "Date Paid column on source.", "category": "structural" },
+      { "ref": "Vendor_T0->Paid_T1:candidate_transfer", "description": "Heuristic: source may populate Paid.", "category": "structural" },
+      { "ref": "Vendor_T0->NotPaid_T2:candidate_transfer", "description": "Heuristic: source may populate NotPaid.", "category": "structural" },
+      { "ref": "Vendor_T0->Paid_T1:semantic_link", "description": "[data_flow] Task writes paid rows (in-range + Date Paid nonempty) from Vendor into Paid.", "category": "semantic" },
+      { "ref": "Vendor_T0->NotPaid_T2:semantic_link", "description": "[data_flow] Task writes unpaid rows (in-range + Date Paid empty) from Vendor into NotPaid.", "category": "semantic" }
+    ]
+  },
+  "output": {
+    "question_groundings": [
+      {
+        "question": "Map the source table and the Paid / NotPaid destination sheets.",
+        "linked_node_ids": ["Vendor_T0", "Paid_T1", "NotPaid_T2", "S_vendor", "S_paid", "S_notpaid"],
+        "linked_edge_refs": [
+          "S_vendor->Vendor_T0:has_table",
+          "S_paid->Paid_T1:has_table",
+          "S_notpaid->NotPaid_T2:has_table",
+          "Vendor_T0->Paid_T1:candidate_transfer",
+          "Vendor_T0->NotPaid_T2:candidate_transfer",
+          "Vendor_T0->Paid_T1:semantic_link",
+          "Vendor_T0->NotPaid_T2:semantic_link"
+        ],
+        "rationale": "Structural edges for sheet→table containment and heuristic transfer; semantic_link edges state task-specific split into Paid vs NotPaid."
+      },
+      {
+        "question": "Set inclusive 2019–2023 bounds and rules: Paid = in range + Date Paid nonempty; NotPaid = in range + Date Paid empty.",
+        "linked_node_ids": ["Vendor_T0", "Vendor_T0_C2_datepaid", "Paid_T1", "NotPaid_T2"],
+        "linked_edge_refs": [
+          "Vendor_T0->Vendor_T0_C2_datepaid:has_column",
+          "Vendor_T0->Paid_T1:semantic_link",
+          "Vendor_T0->NotPaid_T2:semantic_link"
+        ],
+        "rationale": "has_column for Date Paid field; semantic data_flow edges encode paid vs unpaid routing implied by the task."
+      },
+      {
+        "question": "Write FILTER (or equivalent) from source into Paid and NotPaid with matching headers.",
+        "linked_node_ids": ["Vendor_T0", "Paid_T1", "NotPaid_T2"],
+        "linked_edge_refs": [
+          "Vendor_T0->Paid_T1:candidate_transfer",
+          "Vendor_T0->NotPaid_T2:candidate_transfer",
+          "Vendor_T0->Paid_T1:semantic_link",
+          "Vendor_T0->NotPaid_T2:semantic_link"
+        ],
+        "rationale": "Structural candidate_transfer suggests write direction; semantic_link edges align with FILTER into both destinations."
+      },
+      {
+        "question": "Validate headers and samples against the Vendor example file.",
+        "linked_node_ids": ["Vendor_T0", "Paid_T1", "NotPaid_T2"],
+        "linked_edge_refs": [
+          "S_vendor->Vendor_T0:has_table",
+          "S_paid->Paid_T1:has_table",
+          "S_notpaid->NotPaid_T2:has_table"
+        ],
+        "rationale": "Cross-check all three tables."
+      }
+    ]
+  }
+}

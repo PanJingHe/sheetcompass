@@ -1,0 +1,94 @@
+{
+  "input": {
+    "steps": [
+      "Treat Sheet1 and Retail Price as two tables; join on Product to read Retail Price.",
+      "Fill Revenue on every Sheet1 data row from that lookup plus Quantity and Discount."
+    ],
+    "graph_nodes": [
+      {
+        "id": "S_sheet1",
+        "type": "sheet",
+        "name": "Sheet1",
+        "description": { "structural_role": "Sales sheet; hosts Sheet1_T0." }
+      },
+      {
+        "id": "S_retail_price",
+        "type": "sheet",
+        "name": "Retail Price",
+        "description": { "structural_role": "Retail Price sheet; hosts Retail_Price_T0." }
+      },
+      {
+        "id": "Sheet1_T0",
+        "type": "table",
+        "name": "Sheet1_T0",
+        "description": {
+          "structural_role": "Sales table on Sheet1; add Revenue; join on Product.",
+          "layout_fields": "data_start_row=2"
+        }
+      },
+      {
+        "id": "Retail_Price_T0",
+        "type": "table",
+        "name": "Retail_Price_T0",
+        "description": { "structural_role": "Price table; columns Product, Retail Price." }
+      },
+      {
+        "id": "Sheet1_T0_C1_product",
+        "type": "column",
+        "name": "Product",
+        "description": { "structural_role": "Product join key on Sheet1." }
+      },
+      {
+        "id": "Retail_Price_T0_C1_product",
+        "type": "column",
+        "name": "Product",
+        "description": { "structural_role": "Product join key on Retail Price sheet." }
+      },
+      {
+        "id": "Retail_Price_T0_C2_retail_price",
+        "type": "column",
+        "name": "Retail Price",
+        "description": { "structural_role": "List price column; lookup result." }
+      }
+    ],
+    "graph_edges": [
+      { "ref": "S_sheet1->Sheet1_T0:has_table", "description": "Sales table on Sheet1.", "category": "structural" },
+      { "ref": "S_retail_price->Retail_Price_T0:has_table", "description": "Price table on Retail Price sheet.", "category": "structural" },
+      { "ref": "Sheet1_T0->Sheet1_T0_C1_product:has_column", "description": "Product on sales side.", "category": "structural" },
+      { "ref": "Retail_Price_T0->Retail_Price_T0_C1_product:has_column", "description": "Product on price side.", "category": "structural" },
+      { "ref": "Retail_Price_T0->Retail_Price_T0_C2_retail_price:has_column", "description": "Retail Price column to look up.", "category": "structural" },
+      { "ref": "Sheet1_T0_C1_product->Retail_Price_T0_C1_product:schema_match", "description": "Same-named join key across tables.", "category": "structural" },
+      { "ref": "Sheet1_T0->Retail_Price_T0:candidate_transfer", "description": "Heuristic: price table may feed sales calculations.", "category": "structural" },
+      { "ref": "Sheet1_T0->Retail_Price_T0:semantic_link", "description": "[lookup_or_alignment] Task joins Sheet1 to Retail Price on Product to obtain list price.", "category": "semantic" }
+    ]
+  },
+  "output": {
+    "question_groundings": [
+      {
+        "question": "Treat Sheet1 and Retail Price as two tables; join on Product to read Retail Price.",
+        "linked_node_ids": ["Sheet1_T0", "Retail_Price_T0", "S_sheet1", "S_retail_price", "Sheet1_T0_C1_product", "Retail_Price_T0_C1_product", "Retail_Price_T0_C2_retail_price"],
+        "linked_edge_refs": [
+          "S_sheet1->Sheet1_T0:has_table",
+          "S_retail_price->Retail_Price_T0:has_table",
+          "Sheet1_T0->Sheet1_T0_C1_product:has_column",
+          "Retail_Price_T0->Retail_Price_T0_C1_product:has_column",
+          "Retail_Price_T0->Retail_Price_T0_C2_retail_price:has_column",
+          "Sheet1_T0_C1_product->Retail_Price_T0_C1_product:schema_match",
+          "Sheet1_T0->Retail_Price_T0:candidate_transfer",
+          "Sheet1_T0->Retail_Price_T0:semantic_link"
+        ],
+        "rationale": "Structural edges: containment, columns, schema_match on Product, heuristic transfer; semantic_link states the join/lookup intent for this task."
+      },
+      {
+        "question": "Fill Revenue on every Sheet1 data row from that lookup plus Quantity and Discount.",
+        "linked_node_ids": ["Sheet1_T0", "Sheet1_T0_C1_product", "Retail_Price_T0_C2_retail_price"],
+        "linked_edge_refs": [
+          "Sheet1_T0->Retail_Price_T0:semantic_link",
+          "Retail_Price_T0->Retail_Price_T0_C2_retail_price:has_column",
+          "Sheet1_T0->Sheet1_T0_C1_product:has_column"
+        ],
+        "rationale": "semantic_link carries lookup relationship; has_column picks Retail Price field and Sheet1 row fields for the formula."
+      }
+    ]
+  }
+}

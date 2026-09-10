@@ -1,0 +1,51 @@
+{
+  "input": {
+    "instruction": "My workbook has two tables. Sheet \"Sheet1\" records the sales of a boomerang company. Sheet \"Retail Price\" lists the retail prices for all products. I want to calculate the revenue for each transaction in the sales table considering corresponding retail price and discount. Please help me do this in a new column with header \"Revenue\".",
+    "tables_preview": [
+      {
+        "table_id": "Sheet1_T0",
+        "sheet_name": "Sheet1",
+        "num_cols": 3,
+        "range": "A2:C10",
+        "preview_rows": [{ "Product": "Aspen", "Quantity": "33", "Discount": "0.165" }]
+      },
+      {
+        "table_id": "Retail_Price_T0",
+        "sheet_name": "Retail Price",
+        "num_cols": 2,
+        "range": "A2:B20",
+        "preview_rows": [{ "Product": "Aspen", "Retail Price": "21.95" }]
+      }
+    ],
+    "structural_edges": "- S_sheet1 -> Sheet1_T0 : has_table\n- S_retail_price -> Retail_Price_T0 : has_table\n- Sheet1_T0 -> Sheet1_T0_C1_product : has_column\n- Retail_Price_T0 -> Retail_Price_T0_C1_product : has_column\n- Retail_Price_T0 -> Retail_Price_T0_C2_retail_price : has_column\n- Sheet1_T0_C1_product -> Retail_Price_T0_C1_product : schema_match\n- Sheet1_T0 -> Retail_Price_T0 : candidate_transfer",
+    "node_context": [
+      { "id": "Sheet1_T0", "type": "table", "name": "Sheet1_T0", "structural_role": "Sales table; add Revenue." },
+      { "id": "Retail_Price_T0", "type": "table", "name": "Retail_Price_T0", "structural_role": "Product → Retail Price lookup table." },
+      { "id": "Sheet1_T0_C1_product", "type": "column", "name": "Product", "structural_role": "Join key on Sheet1." },
+      { "id": "Retail_Price_T0_C1_product", "type": "column", "name": "Product", "structural_role": "Join key on price sheet." },
+      { "id": "Retail_Price_T0_C2_retail_price", "type": "column", "name": "Retail Price", "structural_role": "Unit list price." }
+    ]
+  },
+  "output": {
+    "node_semantics": [
+      { "id": "Sheet1_T0", "semantic_info": "Fact rows; Revenue = f(lookup price, quantity, discount)." },
+      { "id": "Retail_Price_T0", "semantic_info": "Price list by product." },
+      { "id": "Sheet1_T0_C1_product", "semantic_info": "Links each sale to one price row." },
+      { "id": "Retail_Price_T0_C2_retail_price", "semantic_info": "Feeds Revenue on Sheet1." }
+    ],
+    "semantic_links": [
+      {
+        "source": "Sheet1_T0_C1_product",
+        "target": "Retail_Price_T0_C1_product",
+        "link_type": "lookup_or_alignment",
+        "rationale": "Match Product to get Retail Price."
+      },
+      {
+        "source": "Retail_Price_T0_C2_retail_price",
+        "target": "Sheet1_T0",
+        "link_type": "data_flow",
+        "rationale": "Price flows into new Revenue column with row-level quantity/discount."
+      }
+    ]
+  }
+}

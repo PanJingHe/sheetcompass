@@ -1,0 +1,11 @@
+{
+  "input": {
+    "instruction": "My workbook has two tables. Sheet \"Sheet1\" records the sales of a boomerang company. Sheet \"Retail Price\" lists the retail prices for all products. I want to calculate the revenue for each transaction in the sales table considering corresponding retail price and discount. Please help me do this in a new column with header \"Revenue\"."
+  },
+  "output": {
+    "steps": [
+      "Treat Sheet1 and Retail Price as two tables; join on Product to read Retail Price.",
+      "Fill Revenue on every Sheet1 data row from that lookup plus Quantity and Discount."
+    ]
+  }
+}
