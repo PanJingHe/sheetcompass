@@ -29,7 +29,6 @@ sheetcompass/
 ```bash
 git clone https://github.com/PanJingHe/sheetcompass.git
 cd sheetcompass
-pip install -r requirements.txt
 ```
 
 ### 2. 配置环境变量
@@ -62,7 +61,3 @@ bash run_bench.sh
 * **`run_code.py`**: 负责执行生成的代码片段与工具调用的沙箱环境。
 
 ---
-
-## 📄 许可证
-
-本项目采用 [MIT License](LICENSE) 开源许可证。
