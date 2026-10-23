@@ -1,8 +1,5 @@
 # SheetCompass: Hierarchical Relation Graphs for Agentic Spreadsheet Reasoning
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/)
-
 **SheetCompass** 是一个专注于大语言模型（LLM）电子表格智能推理与结构化理解的项目。针对传统大模型在处理复杂多表、多工作簿电子表格时容易因为序列化或扁平化而丢失空间语义的问题，SheetCompass 引入了**分层关系图（Hierarchical Relation Graphs）**与结构化上下文管理，显著提升了智能体（Agent）对表格内部及跨表关系的推理与操作能力。
 
 ---
@@ -18,9 +15,7 @@ sheetcompass/
 ├── evaluator.py      # 评估指标与评测脚本
 ├── llm.py            # 大模型交互封装（API/本地模型调用）
 ├── main.py           # 主程序入口
-├── run_bench.sh      # 基准测试（Benchmark）运行脚本
-├── run_code.py       # 代码执行与工具调用逻辑
-└── run_sc.sh         # SheetCompass 核心推理流程脚本
+└── run_bench.sh         # SheetCompass 核心推理流程脚本
 ```
 
 ---
@@ -49,24 +44,11 @@ export OPENAI_API_KEY="your-api-key-here"
 
 ## 💻 使用指南
 
-### 运行核心推理任务
-你可以直接通过封装好的 Shell 脚本来运行 SheetCompass 核心流程：
-
-```bash
-bash run_sc.sh
-```
-
 ### 运行基准测试 (Benchmark)
 若要评估模型在表格推理任务上的表现，可执行：
 
 ```bash
 bash run_bench.sh
-```
-
-或者直接调用主程序：
-
-```bash
-python main.py
 ```
 
 ---
