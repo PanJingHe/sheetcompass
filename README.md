@@ -200,8 +200,7 @@ python main.py \
   --output_dir outputs
 ```
 
-The examples use `gpt-4o-mini` for a low-cost smoke test. They do **not** reproduce the GPT-5 or Qwen3.5-Plus results reported in the paper.
-
+The examples use `gpt-4o-mini` for a low-cost smoke test. 
 ## Running Experiments
 
 The provided shell scripts contain author-side default paths. Override them with your local dataset paths:
