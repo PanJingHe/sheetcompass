@@ -18,7 +18,7 @@ Graph-grounded spreadsheet understanding, code generation, and verification for 
 
 Spreadsheet automation is difficult because workbook semantics are encoded not only in cell values, but also in table boundaries, column layouts, and dependencies across sheets. Converting a workbook into flat markdown preserves its text while discarding much of this structure. The resulting representation makes it especially hard for an LLM to identify join keys, trace cross-table dependencies, and safely execute long-horizon operations.
 
-**SheetCompass** addresses this problem by turning a workbook into a structured evidence space. It represents tables and columns as a **Hierarchical Relational Graph (HRG)**, retrieves the task-relevant subgraph, grounds the user instruction to verified spreadsheet entities, and generates executable spreadsheet operations. The full framework described in our WSDM 2027 paper further combines this graph with multi-level memory and an Explorer-Programmer-Reflector workflow for iterative verification.
+**SheetCompass** addresses this problem by turning a workbook into a structured evidence space. It represents tables and columns as a Hierarchical Relational Graph, retrieves the task-relevant subgraph, grounds the user instruction to verified spreadsheet entities, and generates executable spreadsheet operations. The full framework described in our WSDM 2027 paper further combines this graph with multi-level memory and an Explorer-Programmer-Reflector workflow for iterative verification.
 
 ## Why SheetCompass?
 
