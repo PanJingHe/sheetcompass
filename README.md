@@ -35,7 +35,6 @@ Spreadsheet automation is difficult because workbook semantics are encoded not o
 
 SheetCompass detects table regions and constructs a graph with spreadsheet entities at multiple levels:
 
-- **Sheet nodes** identify worksheets and connect them to the tables they contain in the current implementation.
 - **Table nodes** describe a detected table, its worksheet, range, dimensions, and schema.
 - **Column nodes** store a column's name, position, inferred type, null rate, and representative values.
 - **Structural edges** encode explicit organization, including sheet-table and table-column containment.
